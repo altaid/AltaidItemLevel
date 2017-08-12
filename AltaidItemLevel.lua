@@ -28,8 +28,42 @@ local Items = {
     "SecondaryHandSlot"
 }
 
+local gemFrame = CreateFrame('GameTooltip', 'SocketTooltip', UIParent, 'GameTooltipTemplate');
+gemFrame:SetOwner(UIParent, 'ANCHOR_NONE');
+function checkEmptySockets(unitid, slot)
+    local count = 0;
+    gemFrame:SetOwner(UIParent, 'ANCHOR_NONE');
+    gemFrame:ClearLines();
+    gemFrame:SetInventoryItem(unitid, slot)
+
+    for textureCount = 1, 10 do
+        local temp = _G["SocketTooltipTexture" .. textureCount]:GetTexture();
+
+        if temp and temp == "Interface\\ItemSocketingFrame\\UI-EmptySocket-Meta" then
+            count = count + 1;
+        end
+
+        if temp and temp == "Interface\\ItemSocketingFrame\\UI-EmptySocket-Red" then
+            count = count + 1;
+        end
+
+        if temp and temp == "Interface\\ItemSocketingFrame\\UI-EmptySocket-Yellow" then
+            count = count + 1;
+        end
+
+        if temp and temp == "Interface\\ItemSocketingFrame\\UI-EmptySocket-Blue" then
+            count = count + 1;
+        end
+
+        if temp and temp == "Interface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic" then
+            count = count + 1;
+        end
+    end
+    return count;
+end
+
 function ilevel()
-    for _, value in pairs(Items) do
+    for key, value in pairs(Items) do
         local slotId = GetInventorySlotInfo(value)
         local itemLink = GetInventoryItemLink("player", slotId)
         local GSlotKey = "Character" .. value
@@ -58,7 +92,7 @@ function ilevel()
             en:SetJustifyV("TOP")
             en:SetJustifyH("LEFT")
             en:SetTextColor(1, 1, 0)
-            en:SetShadowColor(1, 1, 1, 1);
+            en:SetShadowColor(1, 1, 1, 1)
         else
             _G[GSlotKey .. "en"]:SetText("")
         end
@@ -71,7 +105,7 @@ function ilevel()
             ge:SetJustifyV("TOP")
             ge:SetJustifyH("RIGHT")
             ge:SetTextColor(1, 1, 0)
-            ge:SetShadowColor(1, 1, 1, 1);
+            ge:SetShadowColor(1, 1, 1, 1)
         else
             _G[GSlotKey .. "ge"]:SetText("")
         end
@@ -82,6 +116,10 @@ function ilevel()
 
             _G[GSlotKey .. "il"]:SetText(ilvl)
 
+            if key == 2 or key == 14 or key == 11 or key == 10 then
+                _G[GSlotKey .. "en"]:SetText('E')
+            end
+
             Tooltip:Hide();
             Tooltip:SetOwner(UIParent, 'ANCHOR_NONE')
             Tooltip:ClearLines();
@@ -89,8 +127,10 @@ function ilevel()
 
             for m = 1, Tooltip:NumLines() do
                 if _G["MyTooltipTextLeft" .. m]:GetText():match(ENCHANTED_TOOLTIP_LINE:gsub("%%s", "(.+)")) then
-                    _G[GSlotKey .. "en"]:SetText('e')
+                    _G[GSlotKey .. "en"]:SetTextColor(1, 1, 0)
                     break
+                else
+                    _G[GSlotKey .. "en"]:SetTextColor(0.77, 0.12, 0.23)
                 end
             end
 
@@ -100,9 +140,15 @@ function ilevel()
                 Tooltip2:ClearLines();
                 Tooltip2:SetHyperlink(gemlink)
 
+                if checkEmptySockets("player", key) > 0 then
+                    _G[GSlotKey .. "ge"]:SetText('G')
+                    _G[GSlotKey .. "ge"]:SetTextColor(0.77, 0.12, 0.23)
+                end
+
                 for i = 2, Tooltip2:NumLines() do
                     if _G["MyTooltip2TextLeft" .. i]:GetText():find("+") then
-                        _G[GSlotKey .. "ge"]:SetText("g")
+                        _G[GSlotKey .. "ge"]:SetText('G')
+                        _G[GSlotKey .. "ge"]:SetTextColor(1, 1, 0)
                         break
                     end
                 end
