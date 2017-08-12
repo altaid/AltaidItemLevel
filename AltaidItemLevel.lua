@@ -134,16 +134,16 @@ function ilevel()
                 end
             end
 
+            if checkEmptySockets("player", slotId) > 0 then
+                _G[GSlotKey .. "ge"]:SetText('G')
+                _G[GSlotKey .. "ge"]:SetTextColor(0.77, 0.12, 0.23)
+            end
+
             if gemlink then
                 Tooltip2:Hide()
                 Tooltip2:SetOwner(UIParent, 'ANCHOR_NONE')
                 Tooltip2:ClearLines();
                 Tooltip2:SetHyperlink(gemlink)
-
-                if checkEmptySockets("player", key) > 0 then
-                    _G[GSlotKey .. "ge"]:SetText('G')
-                    _G[GSlotKey .. "ge"]:SetTextColor(0.77, 0.12, 0.23)
-                end
 
                 for i = 2, Tooltip2:NumLines() do
                     if _G["MyTooltip2TextLeft" .. i]:GetText():find("+") then
